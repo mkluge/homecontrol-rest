@@ -1,0 +1,29 @@
+---
+- hosts: restserver
+  vars:
+    remote_sw_dir: /home/pi/rest_software
+  tasks:
+  - name: update git software repo
+    git:
+      repo: 'https://github.com/mkluge/homecontrol-rest.git'
+      dest: {{ remote_sw_dir }}
+  - name: copy lirc files into place
+    copy:
+      src: {{ remote_sw_dir }}/lirc_deamon/etc
+      dest: /etc
+      remote_src: yes
+  - name: copy lirc deamon skript into place
+    copy:
+      src: {{ remote_sw_dir }}/lirc_deamon/lirc_test.py
+      dest: /home/pi
+      remote_src: yes
+  - name: copy lirc deamon skript into place
+    copy:
+      src: {{ remote_sw_dir }}/lirc_deamon/mediactrl.service
+      dest: /lib/systemd/system
+      remote_src: yes
+  - name: enable service mediactrl
+    systemd:
+      name: mediactrl
+      enabled: yes
+      state: started
