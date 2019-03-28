@@ -9,9 +9,8 @@
       dest: "{{ remote_sw_dir }}"
   - name: copy lirc files into place
     copy:
-      src: "{{ remote_sw_dir }}/lirc_deamon/etc"
-      dest: /etc
-      remote_src: yes
+      src: "{{ inventory_dir }}/../lirc_deamon/etc/"
+      dest: /root
   - name: copy lirc deamon skript into place
     copy:
       src: "{{ remote_sw_dir }}/lirc_deamon/lirc_test.py"

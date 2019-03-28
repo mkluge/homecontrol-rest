@@ -1,2 +1,2 @@
 [restserver]
-192.168.178.38 ansible_user=pi
+192.168.178.38 ansible_user=root
