@@ -1,0 +1,11 @@
+[Unit]
+Description=Media Controller Rest API
+After=multi-user.target
+ 
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 /home/pi/rest_software/rest_api/api_entry.py
+Restart=on-abort
+ 
+[Install]
+WantedBy=multi-user.target

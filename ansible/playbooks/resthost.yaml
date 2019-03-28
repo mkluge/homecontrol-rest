@@ -26,3 +26,13 @@
       name: mediactrl
       enabled: yes
       state: started
+  - name: copy rest api deamon skript into place
+    copy:
+      src: "{{ remote_sw_dir }}/rest_api/rest_api.service"
+      dest: /lib/systemd/system
+      remote_src: yes
+  - name: enable service rest api
+    systemd:
+      name: rest_api
+      enabled: yes
+      state: started
