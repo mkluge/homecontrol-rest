@@ -16,7 +16,7 @@
       src: "{{ remote_sw_dir }}/lirc_deamon/lirc_test.py"
       dest: /home/pi
       remote_src: yes
-  - name: copy lirc deamon skript into place
+  - name: copy lirc systemd script
     copy:
       src: "{{ remote_sw_dir }}/lirc_deamon/mediactrl.service"
       dest: /lib/systemd/system
@@ -26,7 +26,11 @@
       name: mediactrl
       enabled: yes
       state: started
-  - name: copy rest api deamon skript into place
+  - name: python module for rest api_entry
+    pip:
+      name: flask_restplus
+      executable: pip3
+  - name: copy rest api systemd script
     copy:
       src: "{{ remote_sw_dir }}/rest_api/rest_api.service"
       dest: /lib/systemd/system
@@ -35,4 +39,4 @@
     systemd:
       name: rest_api
       enabled: yes
-      state: started
+      state: restarted
