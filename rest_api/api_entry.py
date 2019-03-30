@@ -4,6 +4,11 @@ from flask_restplus import Resource, Api
 app = Flask(__name__)
 api = Api(app)
 
+@api.route('/beamer')
+class Beamer(Resource):            #  Create a RESTful resource
+    def get(self):                     #  Create GET endpoint
+        return {'hello': 'world'}
+
 @api.route('/hello')
 class HelloWorld(Resource):
     def get(self):
