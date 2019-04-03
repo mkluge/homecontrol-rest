@@ -26,9 +26,12 @@
       name: mediactrl
       enabled: yes
       state: started
-  - name: python module for rest api_entry
+  - name: install python modules
     pip:
-      name: flask_restplus
+      name:
+        - flask_restplus
+        - python-lirc
+        - denonavr
       executable: pip3
   - name: copy rest api systemd script
     copy:
