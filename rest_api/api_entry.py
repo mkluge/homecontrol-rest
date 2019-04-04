@@ -26,13 +26,18 @@ api = Api(app)
 @api.route('/beamer/<string:action>')
 class Beamer(Resource):
     def get(self, action):
-        return {'get': action}
-
-
-@api.route('/hello')
-class HelloWorld(Resource):
-    def get(self):
-        return {'hello': 'world'}
+        if action=="on":
+            for l in range(1,5):
+                os.system("irsend SEND_ONCE EPSON-TW6000 KEY_POWERUP")
+                time.sleep(0.05)
+            return {'result': "OK"}
+        elif action=="off":
+            for l in range(1,5):
+                os.system("irsend SEND_ONCE EPSON-TW6000 KEY_SUSPEND")
+                time.sleep(0.05)
+            return {'result': "OK"}
+        else:
+            return {}, 404
 
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
