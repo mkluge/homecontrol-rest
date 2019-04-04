@@ -23,7 +23,7 @@ denon = denonavr.DenonAVR( IP_AUDIO )
 app = Flask(__name__)
 api = Api(app)
 
-@api.route('/beamer/<action:string>')
+@api.route('/beamer/<string:action>')
 class Beamer(Resource):
     def get(self, action):
         return {'get': action}
