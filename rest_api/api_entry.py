@@ -25,7 +25,7 @@ api = Api(app)
 
 @api.route('/beamer/<string:action>')
 class Beamer(Resource):
-    def get(self, action):
+    def put(self, action):
         if action=="on":
             for l in range(1,5):
                 os.system("irsend SEND_ONCE EPSON-TW6000 KEY_POWERUP")
@@ -39,27 +39,42 @@ class Beamer(Resource):
         else:
             return {}, 404
 
+@api.route('/sat/<string:action>/<int:value>')
+class Sat(Resource):
+    def put(self, action):
+        if action=="on":
+            return {'result': "OK"}
+        elif action=="off":
+            return {'result': "OK"}
+        else:
+            return {}, 404
+    def get(self, action):
+        if action=="power":
+            sat_on = ping(IP_SAT)
+            return {'result': sat_on}
+        else:
+            return {}, 404
+
+@api.route('/audio/<string:action>/<int:value>')
+class Audio(Resource):
+    def put(self, action, value):
+        if action=="channel":
+            return {'result': "OK"}
+        elif action=="on":
+            denon.power_on()
+            return {'result': "OK"}
+        elif action=="off":
+            denon.power_off()
+            return {'result': "OK"}
+        elif action=="volume":
+            return {'result': "OK"}
+        else:
+            return {}, 404
+    def get(self, action, value):
+        if action=="power":
+            return {'result': "OK"}
+        else:
+            return {}, 404
+
 if __name__ == '__main__':
     app.run(debug=True,host='0.0.0.0')
-
-
-sat_on = ping(IP_SAT)
-print("SAT: " + str(sat_on))
-# wenn Sat nicht anwar, wurde es gerade angeschaltet
-if not sat_on:
-    # d.h. Beamer an
-    for l in range(1,5):
-        os.system("irsend SEND_ONCE EPSON-TW6000 KEY_POWERUP")
-        time.sleep(0.05)
-    # und Denon an, wenn nicht schon an
-    denon.update()
-    denon.power_on()
-    #os.system("irsend SEND_ONCE Denon_RC-1163 KEY_POWERCHANGE")
-    time.sleep(4)
-    denon.set_volume(-40)
-    time.sleep(4)
-    denon.set_volume(-40)
-else:
-    denon.set_volume(-60)
-    denon.update()
-    denon.power_off()
