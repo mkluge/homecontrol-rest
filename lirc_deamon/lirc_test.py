@@ -36,10 +36,8 @@ while True:
                 # und Denon an, wenn nicht schon an
                 denon.update()
                 denon.power_on()
-                #os.system("irsend SEND_ONCE Denon_RC-1163 KEY_POWERCHANGE")
                 time.sleep(4)
-                denon.set_volume(-40)
-                time.sleep(4)
+                denon.input_func="AUXB"
                 denon.set_volume(-40)
             else:
                 denon.set_volume(-60)
@@ -48,5 +46,6 @@ while True:
                     os.system("irsend SEND_ONCE EPSON-TW6000 KEY_SUSPEND")
                     time.sleep(0.05)
                 denon.update()
+                denon.input_func="Spotify"
                 denon.power_off()
         time.sleep(0.05)
