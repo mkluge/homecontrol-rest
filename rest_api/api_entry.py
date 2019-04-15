@@ -57,10 +57,11 @@ class Sat(Resource):
             return {}, 404
 
 @api.route('/audio/<string:action>/', defaults={'value': None})
-@api.route('/audio/<string:action>/<int:value>')
+@api.route('/audio/<string:action>/<string:value>')
 class Audio(Resource):
     def put(self, action, value):
-        if action=="channel":
+        if action=="input":
+            denon.input_func = value
             return {'result': "OK"}
         elif action=="on":
             denon.power_on()
@@ -69,12 +70,22 @@ class Audio(Resource):
             denon.power_off()
             return {'result': "OK"}
         elif action=="volume":
-            return {'result': "OK"}
+            denon.set_volume(int(value))
+            return {'result': denon.volume}
+        elif action=="volume_down":
+            denon.volume_down()
+            return {'result': denon.volume}
+        elif action=="volume_up":
+            denon.volume_up()
+            return {'result': denon.volume}
         else:
             return {}, 404
+
     def get(self, action, value):
         if action=="power":
-            return {'result': value}
+            return {'result': denon.power=='ON' ? true : false}
+        elif action=="inputs":
+            return {'result': denon.input_func_list}
         else:
             return {}, 404
 
