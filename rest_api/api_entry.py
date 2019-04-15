@@ -39,22 +39,24 @@ class Beamer(Resource):
         else:
             return {}, 404
 
+@api.route('/sat/<string:action>/', defaults={'value': None})
 @api.route('/sat/<string:action>/<int:value>')
 class Sat(Resource):
-    def put(self, action):
+    def put(self, action, value):
         if action=="on":
             return {'result': "OK"}
         elif action=="off":
             return {'result': "OK"}
         else:
             return {}, 404
-    def get(self, action):
+    def get(self, action, value):
         if action=="power":
             sat_on = ping(IP_SAT)
             return {'result': sat_on}
         else:
             return {}, 404
 
+@api.route('/audio/<string:action>/', defaults={'value': None})
 @api.route('/audio/<string:action>/<int:value>')
 class Audio(Resource):
     def put(self, action, value):
@@ -72,7 +74,7 @@ class Audio(Resource):
             return {}, 404
     def get(self, action, value):
         if action=="power":
-            return {'result': "OK"}
+            return {'result': value}
         else:
             return {}, 404
 
