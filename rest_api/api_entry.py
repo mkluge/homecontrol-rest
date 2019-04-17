@@ -83,7 +83,7 @@ class Audio(Resource):
 
     def get(self, action, value):
         if action=="power":
-            return {'result': if (denon.power=='ON') then True else False}
+            return {'result': True if (denon.power=='ON') else False}
         elif action=="inputs":
             return {'result': denon.input_func_list}
         else:
