@@ -6,6 +6,29 @@ import lirc
 import denonavr
 from flask import Flask
 from flask_restplus import Resource, Api
+import socket
+import sys
+
+IP_AUDIO = "192.168.178.35"
+IP_SAT = "192.168.178.41"
+PORT_SAT = 8090
+
+def send_sat(message):
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_address = ( IP_SAT, PORT_SAT)
+    data="failure"
+    try:
+        sock.sendto( bytes("<authenticationRequest pin=\"0000\" />", "utf-8"), server_address)
+        data, server = sock.recvfrom(4096)
+        sock.sendto( bytes("<rcuButtonRequest code=\"9\" state=\"pressed\" />", "utf-8"), server_address)
+        sock.sendto( bytes("<rcuButtonRequest code=\"9\" state=\"released\" />", "utf-8"), server_address)
+        sock.sendto( bytes("<rcuButtonRequest code=\"0\" state=\"pressed\" />", "utf-8"), server_address)
+        sock.sendto( bytes("<rcuButtonRequest code=\"0\" state=\"released\" />", "utf-8"), server_address)
+        sock.sendto( bytes("<rcuButtonRequest code=\"36\" state=\"pressed\" />", "utf-8"), server_address)
+        sock.sendto( bytes("<rcuButtonRequest code=\"36\" state=\"released\" />", "utf-8"), server_address)
+    finally:
+        sock.close()
+    return str(data)
 
 def ping(host):
     """
@@ -16,10 +39,7 @@ def ping(host):
     args = "ping -c 1 -W 1 " + host
     return subprocess.call(args, shell=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL) == 0
 
-IP_AUDIO = "192.168.178.35"
-IP_SAT = "192.168.178.41"
 denon = denonavr.DenonAVR( IP_AUDIO )
-
 app = Flask(__name__)
 api = Api(app)
 
@@ -47,6 +67,8 @@ class Sat(Resource):
             return {'result': "OK"}
         elif action=="off":
             return {'result': "OK"}
+        elif action=="channel":
+            return {'result': send_sat("<authenticationRequest pin=\"0000\" />")}
         else:
             return {}, 404
     def get(self, action, value):

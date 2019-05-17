@@ -1,0 +1,7 @@
+<authenticationRequest pin="0000" />
+<rcuButtonRequest code="16" state="pressed" />
+<rcuButtonRequest code="16" state="released" />
+18/19 +/-
+11 standby
+0-9 sind kanaltasten
+36 ist "OK"
