@@ -4,4 +4,9 @@
     {{ title }}
   </h1>
 </div>
+<app-status-view></app-status-view>
 <button class="button button1">Green</button>
+<div>
+<input [(ngModel)]="search">
+<p>Du suchst gerade nach: {{search}}</p>
+</div>
