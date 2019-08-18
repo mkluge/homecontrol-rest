@@ -11,7 +11,7 @@ export class DataService {
   url: string;
   constructor(http: Http) {
     this.http = http;
-    this.url = this.config.SatApiUrl;
+    this.url = this.config.SatApiUrl+"/power";
   }
 
   getData() {
