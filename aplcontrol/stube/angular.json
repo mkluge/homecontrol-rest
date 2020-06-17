@@ -132,5 +132,8 @@
       }
     }
   },
-  "defaultProject": "stube"
+  "defaultProject": "stube",
+  "cli": {
+    "analytics": "5d8937d6-d561-4457-99aa-b7dbe4d98167"
+  }
 }
