@@ -1,0 +1,21 @@
+---
+- name: install python modules
+  pip:
+    name:
+      - paho-mqtt
+    executable: pip3
+- name: install beamer mqtt systemd unit file
+  vars:
+    script: "{{ script_dir }}/mqtt_beamer.py"
+    description: Beamer MQTT Service
+  template:
+    src: python_service.j2
+    dest: "{{ systemd_dir }}/beamer_mqtt.service"
+    owner: "{{ systemd_owner }}"
+    group: "{{ systemd_group }}"
+    mode: 0644
+- name: start beamer mqtt service
+  systemd: 
+    state: restarted
+    name: beamer_mqtt
+    daemon_reload: yes

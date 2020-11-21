@@ -1,0 +1,6 @@
+---
+all:
+  hosts:
+   stube:
+    ansible_host: 192.168.178.39
+    ansible_user: root

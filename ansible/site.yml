@@ -1,0 +1,11 @@
+---
+- hosts: stube
+  roles:
+    - beamer
+  vars:
+    script_dir: /home/pi/rest_software
+    script_owner: pi
+    script_group: pi
+    systemd_owner: root
+    systemd_group: root
+    systemd_dir: /lib/systemd/system
