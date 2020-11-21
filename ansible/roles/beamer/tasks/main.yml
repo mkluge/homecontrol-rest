@@ -4,6 +4,13 @@
     name:
       - paho-mqtt
     executable: pip3
+- name: copy python script
+  copy:
+    src: beamer_mqtt.py
+    dest: "{{ script_dir }}/"
+    owner: "{{ script_owner }}"
+    group: "{{ script_group }}"
+    mode: 0644
 - name: install beamer mqtt systemd unit file
   vars:
     script: "{{ script_dir }}/mqtt_beamer.py"
