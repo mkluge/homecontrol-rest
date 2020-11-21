@@ -1,0 +1,4 @@
+{
+    "IP_MQTT": "192.168.178.104",
+    "MQTT_BEAMER_TOPIC": "beamer/power"
+}

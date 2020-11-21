@@ -6,6 +6,7 @@ Wants=network-online.target
 
 [Service]
 Type=simple
+WorkingDirectory={{ script_dir }}
 ExecStart=/usr/bin/python3 {{ script }}
 Restart=on-failure
 Environment=PYTHONUNBUFFERED=1

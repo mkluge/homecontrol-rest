@@ -11,9 +11,16 @@
     owner: "{{ script_owner }}"
     group: "{{ script_group }}"
     mode: 0644
+- name: copy config file
+  copy:
+    src: apl19config.json
+    dest: "{{ script_dir }}/"
+    owner: "{{ script_owner }}"
+    group: "{{ script_group }}"
+    mode: 0644
 - name: install beamer mqtt systemd unit file
   vars:
-    script: "{{ script_dir }}/mqtt_beamer.py"
+    script: "{{ script_dir }}/beamer_mqtt.py"
     description: Beamer MQTT Service
   template:
     src: python_service.j2

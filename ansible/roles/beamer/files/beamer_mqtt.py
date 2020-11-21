@@ -1,12 +1,11 @@
 import subprocess
 import os
 import time
+import json
 import paho.mqtt.client as mqtt
 
-IP_MQTT = "192.168.178.104"
 ON = "KEY_POWERUP"
 OFF = "KEY_SUSPEND"
-TOPIC = "beamer/power"
 
 
 def on_connect(client, userdata, flags, rc):
@@ -14,8 +13,7 @@ def on_connect(client, userdata, flags, rc):
 
 
 def on_message(client, userdata, msg):
-    print(msg.topic)
-    if msg.topic == TOPIC:
+    if msg.topic == config["MQTT_BEAMER_TOPIC"]:
         if msg.payload == b"on":
             beamer_power_cmd(ON)
         if msg.payload == b"off":
@@ -29,10 +27,13 @@ def beamer_power_cmd(key):
         time.sleep(0.05)
 
 
+with open("apl19config.json") as json_file:
+    config = json.load(json_file)
+
 client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
-client.connect(IP_MQTT, 1883, 60)
-client.subscribe(TOPIC)
+client.connect(config["IP_MQTT"], 1883, 60)
+client.subscribe(config["MQTT_BEAMER_TOPIC"])
 
 client.loop_forever()
