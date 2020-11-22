@@ -1,4 +1,3 @@
-import subprocess
 import os
 import time
 import json
@@ -8,11 +7,15 @@ ON = "KEY_POWERUP"
 OFF = "KEY_SUSPEND"
 
 
-def on_connect(client, userdata, flags, rc):
+def on_connect(_client, _userdata, _flags, rc):
+    """ prints debug text at connect
+    """
     print("Connected with result code " + str(rc))
 
 
-def on_message(client, userdata, msg):
+def on_message(_client, _userdata, msg):
+    """ works on incoming messages
+    """
     if msg.topic == config["MQTT_BEAMER_TOPIC"]:
         if msg.payload == b"on":
             beamer_power_cmd(ON)
@@ -21,7 +24,9 @@ def on_message(client, userdata, msg):
 
 
 def beamer_power_cmd(key):
-    for l in range(1, 5):
+    """ does the actual beamer switching
+    """
+    for _ in range(1, 5):
         os.system(
             "irsend --device=/var/run/lirc/lircd-tx SEND_ONCE EPSON-TW6000 "+key)
         time.sleep(0.05)

@@ -2,6 +2,7 @@
 - hosts: stube
   roles:
     - beamer
+    - lircd_stube
   vars:
     script_dir: /home/pi/rest_software
     script_owner: pi
