@@ -1,0 +1,6 @@
+---
+- name: make sure root key is present
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file', '/home/mkluge/.ssh/id_rsa.pub') }}"
