@@ -1,0 +1,15 @@
+---
+- name: make sure omd key is present
+  authorized_key:
+    user: root
+    state: present
+    key: "{{ lookup('file', '/home/mkluge/.ssh/omd.pub') }}"
+- name: install check_mk agent
+  apt:
+    name: check-mk-agent
+    update_cache: yes
+- name: create link in local
+  file:
+    src: "/usr/bin/check_mk_agent"
+    dest: "/usr/local/bin/check_mk_agent"
+    state: link
