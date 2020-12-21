@@ -1,6 +1,20 @@
 ---
+- hosts: garden
+  roles:
+    - root_key
+    - check_mk_client
+#    - dachgarten
+  vars:
+    script_dir: /home/pi/rest_software
+    script_owner: pi
+    script_group: pi
+    systemd_owner: root
+    systemd_group: root
+ 
 - hosts: stube
   roles:
+    - root_key
+    - check_mk_client
     - beamer
     - lircd_stube
   vars:

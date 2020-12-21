@@ -1,6 +1,9 @@
 ---
 all:
   hosts:
+   garden:
+    ansible_host: 192.168.178.93
+    ansible_user: root
    stube:
     ansible_host: 192.168.178.39
     ansible_user: root
