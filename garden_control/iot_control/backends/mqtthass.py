@@ -56,6 +56,7 @@ class BackendMqttHass(IoTBackendBase):
 
     def announce(self):
         for device in self.devices:
+            print(device)
             # get list of sensors on device
             sensors = device.list_sensors()
             # create a state topic for everyone
@@ -94,7 +95,7 @@ class BackendMqttHass(IoTBackendBase):
     # The callback for when the client receives a CONNACK response from the server.
     def mqtt_callback_connect(self, client, userdata, flags, rc):
 
-        (result, mid) = client.subscribe("homeassistant/status")
+        (result, mid) = self.mqtt_client.subscribe("homeassistant/status")
         print("Got subscription result for " +
               "homeassistant/status"+":"+str(result))
         self.announce()
