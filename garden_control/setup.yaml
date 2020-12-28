@@ -34,16 +34,14 @@ devices:
       temperature:
         device_class: "temperature"
         name: "Temperatur Dachgarten"
-        unique_id": "temperatur_dachgarten"
+        unique_id: "temperatur_dachgarten"
         unit_of_measurement: "°C"
         value_template: "{{ value_json.temperature }}"
         expire_after: 370
       pressure:
         device_class: "pressure"
         name: "Luftdruck Dachgarten"
-        unique_id": "luftdruck_dachgarten"
-        mqtt_state_topic: ""
-        mqtt_avail_topic: ""
+        unique_id: "luftdruck_dachgarten"
         unit_of_measurement: "hPa"
         value_template: "{{ value_json.pressure }}"
         expire_after: 370

@@ -26,10 +26,6 @@ class IoTBackendBase(metaclass=ABCMeta):
         """ Abstract method to work on a sensors data """
 
     @abstractmethod
-    def start(self) -> None:
-        """ Abstract method to start working """
-
-    @abstractmethod
     def shutdown(self) -> None:
         """ Abstract method to shut down """
 

@@ -42,9 +42,8 @@ class Dachgarten:
             self.devices.append(real_device)
             for backend in self.backends:
                 backend.register_device(real_device)
-        # third: start backends
         for backend in self.backends:
-            backend.start()
+            backend.announce()
 
     def set_intervall(self, new_intervall: int):
         self.update_intervall = new_intervall
