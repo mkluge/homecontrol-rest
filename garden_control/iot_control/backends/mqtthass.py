@@ -61,25 +61,26 @@ class BackendMqttHass(IoTBackendBase):
             print(sensors)
             # create a state topic for everyone
             for sensor in sensors:
+                conf = device.conf[sensor]
                 config_topic = "{}/sensor/{}/{}/config".format(
-                    self.config.hass_discovery_prefix, sensor.unique_id, sensor)
+                    self.config["hass_discovery_prefix"], conf["unique_id"], sensor)
                 state_topic = "{}/sensor/{}/state".format(
-                    self.config.hass_discovery_prefix, sensor.unique_id)
+                    self.config["hass_discovery_prefix"], conf["unique_id"])
                 avail_topic = "{}/sensor/{}/avail".format(
-                    self.config.hass_discovery_prefix, sensor.unique_id)
+                    self.config["hass_discovery_prefix"], conf["unique_id"])
                 self.avail_topics.append(avail_topic)
                 self.state_topics[sensor] = state_topic
                 conf_dict = {
-                    "device_class": sensor.device_class,
-                    "name": sensor.name,
-                    "unique_id": sensor.unique_id,
+                    "device_class": conf["device_class"],
+                    "name": conf["name"],
+                    "unique_id": conf["unique_id"],
                     "state_topic": state_topic,
                     "availability_topic": avail_topic,
-                    "unit_of_measurement": sensor.unit_of_measurement,
-                    "value_template": sensor.value_template,
-                    "expire_after": sensor.expire_after,
-                    "payload_available": self.config.online_payload,
-                    "payload_not_available": self.config.offline_payload
+                    "unit_of_measurement": conf["unit_of_measurement"],
+                    "value_template": conf["value_template"],
+                    "expire_after": conf["expire_after"],
+                    "payload_available": self.config["online_payload"],
+                    "payload_not_available": self.config["offline_payload"]
                 }
                 payload = json.dumps(conf_dict)
 
