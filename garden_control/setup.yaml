@@ -1,0 +1,49 @@
+# name for the sensors in the tree
+name: 'garden'
+# configure backends
+backends:
+  mqtt_hass:
+    server: '192.168.178.104'
+    port: 1883
+    user: ''
+    password: ''
+    # "homeassistant" is the standard value for HAss
+    hass_discovery_prefix: "homeassistant"
+    online_payload: "online"
+    offline_payload: "offline"
+#  influx:
+#    server: ''
+#    port: 8086
+#    user: ''
+#    pass: ''
+#    database: ''
+devices:
+  bme280:
+    port: 1
+    i2c_address: 0x76
+    sensors:
+      humidity:
+        # one of the supported MQTT components
+        device_class: "humidity"
+        name: "Luftfeuchte Dachgarten"
+        # the ID of the device. This is only to allow for separate topics for each device and is not used for the entity_id. The ID of the device must only consist of characters from the character class [a-zA-Z0-9_-] (alphanumerics, underscore and hyphen).
+        unique_id: "luftfeuchte_dachgarten"
+        unit_of_measurement: "%"
+        value_template: "{{ value_json.humidity }}"
+        expire_after: 370
+      temperature:
+        device_class: "temperature"
+        name: "Temperatur Dachgarten"
+        unique_id": "temperatur_dachgarten"
+        unit_of_measurement: "°C"
+        value_template: "{{ value_json.temperature }}"
+        expire_after: 370
+      pressure:
+        device_class: "pressure"
+        name: "Luftdruck Dachgarten"
+        unique_id": "luftdruck_dachgarten"
+        mqtt_state_topic: ""
+        mqtt_avail_topic: ""
+        unit_of_measurement: "hPa"
+        value_template: "{{ value_json.pressure }}"
+        expire_after: 370
