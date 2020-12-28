@@ -49,11 +49,12 @@ class Dachgarten:
         self.update_intervall = new_intervall
 
     def loop_forever(self):
-        for device in self.devices:
-            data = device.read_data()
-            for backend in self.backends:
-                backend.workon(device, data)
-        time.sleep(self.update_intervall)
+        while True:
+            for device in self.devices:
+                data = device.read_data()
+                for backend in self.backends:
+                    backend.workon(device, data)
+            time.sleep(self.update_intervall)
 
 
 if __name__ == '__main__':
