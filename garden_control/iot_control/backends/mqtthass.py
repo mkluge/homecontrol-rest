@@ -47,11 +47,12 @@ class BackendMqttHass(IoTBackendBase):
         self.mqtt_client.disconnect()
         self.mqtt_client.loop_stop()
 
-    def workon(self, thing: IoTDeviceBase, data: List[Dict]):
+    def workon(self, thing: IoTDeviceBase, data: Dict):
         for entry in data:
-            val = {entry: data[entry]}
-            state_topic = self.state_topics[entry]
-            self.mqtt_client.publish(state_topic, json.dumps(val))
+            if entry in self.state_topics:
+                val = {entry: data[entry]}
+                state_topic = self.state_topics[entry]
+                self.mqtt_client.publish(state_topic, json.dumps(val))
 
     def announce(self):
         for device in self.devices:
