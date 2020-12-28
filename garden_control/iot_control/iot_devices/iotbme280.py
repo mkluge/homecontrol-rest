@@ -19,6 +19,7 @@ class IoTbme280(IoTDeviceBase):
     def __init__(self, **kwargs):
         super().__init__()
         setupdata = kwargs.get("config")
+        self.conf = setupdata
         self.port = setupdata["port"]
         self.address = setupdata["i2c_address"]
         self.bus = smbus2.SMBus(self.port)
