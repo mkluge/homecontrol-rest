@@ -29,9 +29,9 @@ class BackendMqttHass(IoTBackendBase):
         self.mqtt_client.on_message = self.mqtt_callback_message
         self.mqtt_client.on_disconnect = self.mqtt_callback_disconnect
 
-        if config['user'] and config['password']:
-            self.mqtt_client.username_pw_set(
-                username=config['user'], password=config['password'])
+#        if config['user'] and config['password']:
+#            self.mqtt_client.username_pw_set(
+#                username=config['user'], password=config['password'])
 
     def start(self) -> None:
         self.mqtt_client.connect(
@@ -82,7 +82,12 @@ class BackendMqttHass(IoTBackendBase):
                 }
                 payload = json.dumps(conf_dict)
 
-                self.mqtt_client.publish(config_topic, payload)
+                print("publishing: {}".format(payload))
+                result = self.mqtt_client.publish(config_topic, payload)
+                result.wait_for_publish()
+                if result.rc != mqtt.MQTT_ERR_SUCCESS:
+                    print("unable to publish")
+
                 self.mqtt_client.publish(
                     avail_topic, self.config.online_payload)
 
