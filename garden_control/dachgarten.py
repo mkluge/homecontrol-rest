@@ -37,10 +37,11 @@ class Dachgarten:
         # second: register devices with backend
         for device in self.conf["devices"]:
             device_cfg = self.conf["devices"][device]
-            self.devices.append(IoTFactory.create_device(
-                device, config=device_cfg))
+            real_device = IoTFactory.create_device(
+                device, config=device_cfg)
+            self.devices.append(real_device)
             for backend in self.backends:
-                backend.register_device(device)
+                backend.register_device(real_device)
         # third: start backends
         for backend in self.backends:
             backend.start()
