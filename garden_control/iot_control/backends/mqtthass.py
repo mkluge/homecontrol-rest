@@ -62,6 +62,7 @@ class BackendMqttHass(IoTBackendBase):
             # create a state topic for everyone
             for sensor in sensors:
                 conf = device.conf[sensor]
+                print(conf)
                 config_topic = "{}/sensor/{}/{}/config".format(
                     self.config["hass_discovery_prefix"], conf["unique_id"], sensor)
                 state_topic = "{}/sensor/{}/state".format(
