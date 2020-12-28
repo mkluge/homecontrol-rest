@@ -63,6 +63,7 @@ class BackendMqttHass(IoTBackendBase):
             for sensor in sensors:
                 print("hello")
                 print(sensor)
+                print(device.conf)
                 conf = device.conf[sensor]
                 print(conf)
                 config_topic = "{}/sensor/{}/{}/config".format(
