@@ -5,7 +5,6 @@
 """ definitions for an BH1750 sensor
 """
 
-import time
 from typing import Dict
 import smbus
 from iot_control.iotdevicebase import IoTDeviceBase
@@ -31,11 +30,11 @@ class IoTbh1750(IoTDeviceBase):
         # Device is automatically set to Power Down after measurement.
         ONE_TIME_HIGH_RES_MODE_1 = 0x20
         # Read data from I2C interface
-        data = bus.read_i2c_block_data(
+        data = self.bus.read_i2c_block_data(
             self.address, ONE_TIME_HIGH_RES_MODE_1)
         result = (data[1] + (256 * data[0])) / 1.2
         val = {
-            "illuminance": data.temperature,
+            "illuminance": "{:.1f}".format(result),
         }
         return val
 

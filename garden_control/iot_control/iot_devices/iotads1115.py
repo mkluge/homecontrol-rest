@@ -4,9 +4,7 @@
 """ definitions for an ADS115 analog digital converter
 """
 
-import time
 from typing import Dict
-import smbus
 from iot_control.iotdevicebase import IoTDeviceBase
 from iot_control.iotfactory import IoTFactory
 from iot_control.iot_devices.ADS1x15 import ADS1115
