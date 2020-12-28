@@ -56,9 +56,9 @@ class BackendMqttHass(IoTBackendBase):
 
     def announce(self):
         for device in self.devices:
-            print(device)
             # get list of sensors on device
             sensors = device.list_sensors()
+            print(sensors)
             # create a state topic for everyone
             for sensor in sensors:
                 config_topic = "{}/sensor/{}/{}/config".format(
