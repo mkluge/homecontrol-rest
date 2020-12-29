@@ -24,11 +24,12 @@ class IoTDeviceBase(metaclass=ABCMeta):
     def read_data(self) -> Dict:
         """ Abstract method to read data """
 
+    @abstractmethod
     def sensor_list(self) -> list:
         """ Lists all sensors on the device """
 
     @abstractmethod
-    def set_state(self, data: Dict) -> None:
+    def set_state(self, messages: Dict) -> None:
         """ Abstract method to set a new state """
 
     @abstractmethod
