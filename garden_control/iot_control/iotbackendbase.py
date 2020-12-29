@@ -22,7 +22,7 @@ class IoTBackendBase(metaclass=ABCMeta):
         """ Constructor """
 
     @abstractmethod
-    def workon(self, device: IoTDeviceBase, data: Dict) -> None:
+    def workon(self, thing: IoTDeviceBase, data: Dict) -> None:
         """ Abstract method to work on a sensors data """
 
     @abstractmethod
@@ -30,5 +30,5 @@ class IoTBackendBase(metaclass=ABCMeta):
         """ Abstract method to shut down """
 
     @abstractmethod
-    def register_device(self, device_config: IoTDeviceBase) -> None:
+    def register_device(self, device: IoTDeviceBase) -> None:
         """ Abstract method to register a device """
