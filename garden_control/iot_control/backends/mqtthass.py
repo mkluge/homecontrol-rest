@@ -54,55 +54,121 @@ class BackendMqttHass(IoTBackendBase):
 
     def announce(self):
         for device in self.devices:
-            # get list of sensors on device
-            sensors = device.sensor_list()
-            # create a state topic for everyone
-            try:
-                sensor_cfg = device.conf["sensors"]
-                for sensor in sensors:
-                    try:
-                        sconf = sensor_cfg[sensor]
-                        print(sconf)
-                        config_topic = "{}/sensor/{}/{}/config".format(
-                            self.config["hass_discovery_prefix"], sconf["unique_id"], sensor)
-                        state_topic = "{}/sensor/{}/state".format(
-                            self.config["hass_discovery_prefix"], sconf["unique_id"])
-                        avail_topic = "{}/sensor/{}/avail".format(
-                            self.config["hass_discovery_prefix"], sconf["unique_id"])
-                        self.avail_topics.append(avail_topic)
-                        self.state_topics[sensor] = state_topic
-                        conf_dict = {
-                            "device_class": sconf["device_class"],
-                            "name": sconf["name"],
-                            "unique_id": sconf["unique_id"],
-                            "state_topic": state_topic,
-                            "availability_topic": avail_topic,
-                            "unit_of_measurement": sconf["unit_of_measurement"],
-                            "value_template": sconf["value_template"],
-                            "expire_after": sconf["expire_after"],
-                            "payload_available": self.config["online_payload"],
-                            "payload_not_available": self.config["offline_payload"]
-                        }
-                        payload = json.dumps(conf_dict)
+            # is it a sensor or a switch
+            if "sensors" in device.conf:
+                # get list of sensors on device
+                sensors = device.sensor_list()
+                # create a state topic for everyone
+                try:
+                    sensor_cfg = device.conf["sensors"]
+                    for sensor in sensors:
+                        try:
+                            sconf = sensor_cfg[sensor]
+                            print(sconf)
+                            config_topic = "{}/sensor/{}/{}/config".format(
+                                self.config["hass_discovery_prefix"],
+                                sconf["unique_id"], sensor)
+                            state_topic = "{}/sensor/{}/state".format(
+                                self.config["hass_discovery_prefix"],
+                                sconf["unique_id"])
+                            avail_topic = "{}/sensor/{}/avail".format(
+                                self.config["hass_discovery_prefix"],
+                                sconf["unique_id"])
+                            self.avail_topics.append(avail_topic)
+                            self.state_topics[sensor] = state_topic
+                            conf_dict = {
+                                "device_class": sconf["device_class"],
+                                "name": sconf["name"],
+                                "unique_id": sconf["unique_id"],
+                                "state_topic": state_topic,
+                                "availability_topic": avail_topic,
+                                "unit_of_measurement": sconf["unit_of_measurement"],
+                                "value_template": sconf["value_template"],
+                                "expire_after": sconf["expire_after"],
+                                "payload_available": self.config["online_payload"],
+                                "payload_not_available": self.config["offline_payload"]
+                            }
+                            payload = json.dumps(conf_dict)
 
-                        print("publishing: {}".format(payload))
-                        result = self.mqtt_client.publish(
-                            config_topic, payload)
-                        print("wait for publish")
-                        result.wait_for_publish()
-                        print("publish ")
-                        if result.rc != mqtt.MQTT_ERR_SUCCESS:
-                            print("unable to publish")
-                        print(result)
+                            print("publishing: {}".format(payload))
+                            result = self.mqtt_client.publish(
+                                config_topic, payload)
+                            print("wait for publish")
+                            result.wait_for_publish()
+                            print("publish ")
+                            if result.rc != mqtt.MQTT_ERR_SUCCESS:
+                                print("unable to publish")
+                            print(result)
 
-                        self.mqtt_client.publish(
-                            avail_topic, self.config["online_payload"])
-                    except:
-                        print("config for sensor {} missing".format(sensor))
-            except:
-                print("error: sensors config part missing")
+                            self.mqtt_client.publish(
+                                avail_topic, self.config["online_payload"])
+                        except:
+                            print("config for sensor {} missing".format(sensor))
+                except:
+                    print("error: sensors config part missing")
+            else:
+                # it is a switch
+                # get list of switches on device
+                switches = device.sensor_list()
+                # create a state topic for everyone
+                try:
+                    switches_cfg = device.conf["names"]
+                    for switch in switches:
+                        try:
+                            sconf = switches_cfg[switch]
+                            print(sconf)
+                            config_topic = "{}/switch/{}/{}/config".format(
+                                self.config["hass_discovery_prefix"],
+                                sconf["unique_id"], switch)
+                            state_topic = "{}/switch/{}/state".format(
+                                self.config["hass_discovery_prefix"],
+                                sconf["unique_id"])
+                            avail_topic = "{}/switch/{}/avail".format(
+                                self.config["hass_discovery_prefix"],
+                                sconf["unique_id"])
+                            command_topic = "{}/switch/{}/command".format(
+                                self.config["hass_discovery_prefix"],
+                                sconf["unique_id"])
+                            self.avail_topics.append(avail_topic)
+                            self.state_topics[switch] = state_topic
+                            conf_dict = {
+                                "name": sconf["name"],
+                                "unique_id": sconf["unique_id"],
+                                "state_topic": state_topic,
+                                "availability_topic": avail_topic,
+                                "command_topic": command_topic,
+                                "value_template": "{{ value_json." + switch + " }}",
+                                "payload_available": self.config["online_payload"],
+                                "payload_not_available": self.config["offline_payload"],
+                                "payload_on": self.config["payload_on"],
+                                "payload_off": self.config["payload_off"],
+                                "state_on": self.config["payload_on"],
+                                "state_off": self.config["payload_off"],
+                                # optimistic: false
+                                # qos: 0
+                                # retain: true
+                            }
+                            payload = json.dumps(conf_dict)
+
+                            print("publishing: {}".format(payload))
+                            result = self.mqtt_client.publish(
+                                config_topic, payload)
+                            print("wait for publish")
+                            result.wait_for_publish()
+                            print("publish ")
+                            if result.rc != mqtt.MQTT_ERR_SUCCESS:
+                                print("unable to publish")
+                            print(result)
+
+                            self.mqtt_client.publish(
+                                avail_topic, self.config["online_payload"])
+                        except:
+                            print("config for sensor {} missing".format(sensor))
+                except:
+                    print("error: sensors config part missing")
 
     # The callback for when the client receives a CONNACK response from the server.
+
     def mqtt_callback_connect(self, client, userdata, flags, rc):
 
         (result, mid) = self.mqtt_client.subscribe("homeassistant/status")
@@ -114,14 +180,14 @@ class BackendMqttHass(IoTBackendBase):
     def mqtt_callback_message(self, client, userdata, msg):
 
         # ignore retained messages
-        if 1 == msg.retain:
+        if msg.retain:
             return
 
-        if "homeassistant/status" == msg.topic:
+        if msg.topic == "homeassistant/status":
             print("home assistant status message:", msg.topic)
             # report ourselves as available to home assistant
 
-            if b'online' == msg.payload:
+            if msg.payload == b'online':
                 # re-report ourselves available to home assistant and report current state
                 self.announce()
 
