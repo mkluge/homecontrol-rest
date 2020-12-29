@@ -41,7 +41,7 @@ class IoTbh1750(IoTDeviceBase):
     def sensor_list(self) -> list:
         return ["illuminance"]
 
-    def set_state(self, _) -> None:
+    def set_state(self, _) -> bool:
         """ nothing can be set here """
 
     def shutdown(self, _) -> None:

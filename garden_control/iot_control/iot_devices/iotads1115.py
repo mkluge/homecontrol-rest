@@ -30,14 +30,14 @@ class IoTads1115(IoTDeviceBase):
         self.adc.stop_adc()
         value = float(value)*4.096/32768.0
         val = {
-            "voltage": "{:.2f}".format(value),
+            "feuchte": "{:.2f}".format(value),
         }
         return val
 
     def sensor_list(self) -> list:
         return ["voltage"]
 
-    def set_state(self, _) -> None:
+    def set_state(self, _) -> bool:
         """ nothing can be set here """
 
     def shutdown(self, _) -> None:

@@ -18,6 +18,7 @@ class BackendMqttHass(IoTBackendBase):
 
     avail_topics = []
     state_topics = {}
+    command_topics = {}
     devices = []
 
     def __init__(self, **kwargs):
@@ -37,6 +38,7 @@ class BackendMqttHass(IoTBackendBase):
 #                username=config['user'], password=config['password'])
 
     def register_device(self, device: IoTDeviceBase) -> None:
+        print(device)
         self.devices.append(device)
 
     def shutdown(self):
@@ -57,14 +59,13 @@ class BackendMqttHass(IoTBackendBase):
             # is it a sensor or a switch
             if "sensors" in device.conf:
                 # get list of sensors on device
-                sensors = device.sensor_list()
+                sensors = device.conf["sensors"]
                 # create a state topic for everyone
                 try:
                     sensor_cfg = device.conf["sensors"]
                     for sensor in sensors:
                         try:
                             sconf = sensor_cfg[sensor]
-                            print(sconf)
                             config_topic = "{}/sensor/{}/{}/config".format(
                                 self.config["hass_discovery_prefix"],
                                 sconf["unique_id"], sensor)
@@ -83,7 +84,7 @@ class BackendMqttHass(IoTBackendBase):
                                 "state_topic": state_topic,
                                 "availability_topic": avail_topic,
                                 "unit_of_measurement": sconf["unit_of_measurement"],
-                                "value_template": sconf["value_template"],
+                                "value_template": "{{ value_json." + sensor + " }}",
                                 "expire_after": sconf["expire_after"],
                                 "payload_available": self.config["online_payload"],
                                 "payload_not_available": self.config["offline_payload"]
@@ -102,10 +103,10 @@ class BackendMqttHass(IoTBackendBase):
 
                             self.mqtt_client.publish(
                                 avail_topic, self.config["online_payload"])
-                        except:
-                            print("config for sensor {} missing".format(sensor))
+                        except Exception as e:
+                            print("config for sensor {} wrong: {}".format(sensor, e))
                 except:
-                    print("error: sensors config part missing")
+                    print("error announcing sensor")
             else:
                 # it is a switch
                 # get list of switches on device
@@ -144,7 +145,7 @@ class BackendMqttHass(IoTBackendBase):
                                 "payload_off": self.config["payload_off"],
                                 "state_on": self.config["payload_on"],
                                 "state_off": self.config["payload_off"],
-                                # optimistic: false
+                                "optimistic": "false"
                                 # qos: 0
                                 # retain: true
                             }
@@ -155,17 +156,26 @@ class BackendMqttHass(IoTBackendBase):
                                 config_topic, payload)
                             print("wait for publish")
                             result.wait_for_publish()
-                            print("publish ")
+                            print("published")
                             if result.rc != mqtt.MQTT_ERR_SUCCESS:
-                                print("unable to publish")
+                                print("publish result not OK")
                             print(result)
 
                             self.mqtt_client.publish(
                                 avail_topic, self.config["online_payload"])
+
+                            # now subscribe to the command topic
+                            (result, mid) = self.mqtt_client.subscribe(
+                                command_topic)
+                            print("subscription result: "+str(result))
+                            self.command_topics[command_topic] = [
+                                device, switch, state_topic
+                            ]
+
                         except:
-                            print("config for sensor {} missing".format(sensor))
+                            print("error announcing switch {}".format(switch))
                 except:
-                    print("error: sensors config part missing")
+                    print("error missing config for switches")
 
     # The callback for when the client receives a CONNACK response from the server.
 
@@ -174,10 +184,18 @@ class BackendMqttHass(IoTBackendBase):
         (result, mid) = self.mqtt_client.subscribe("homeassistant/status")
         print("Got subscription result for " +
               "homeassistant/status"+":"+str(result))
-        self.announce()
+#        self.announce()
 
     # The callback for when a PUBLISH message is received from the server.
     def mqtt_callback_message(self, client, userdata, msg):
+
+        if msg.topic in self.command_topics:
+            payload = msg.payload.decode("utf-8")
+            [device, switch, state_topic] = self.command_topics[msg.topic]
+            print("calling device {}, switch {} with {}".format(
+                device, switch, payload))
+            if device.set_state({switch: payload}):
+                self.mqtt_client.publish(state_topic, msg.payload)
 
         # ignore retained messages
         if msg.retain:

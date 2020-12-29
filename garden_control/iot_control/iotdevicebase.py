@@ -29,7 +29,7 @@ class IoTDeviceBase(metaclass=ABCMeta):
         """ Lists all sensors on the device """
 
     @abstractmethod
-    def set_state(self, messages: Dict) -> None:
+    def set_state(self, messages: Dict) -> bool:
         """ Abstract method to set a new state """
 
     @abstractmethod

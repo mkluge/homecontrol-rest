@@ -8,9 +8,10 @@
 import time
 import yaml
 import sys
-#from iot_control.iotdevicebase import IoTDeviceBase
-#from iot_control.iotbackendbase import IoTBackendBase
 from iot_control.iot_devices import iotbme280
+from iot_control.iot_devices import iotads1115
+from iot_control.iot_devices import iotbh1750
+from iot_control.iot_devices import iotraspigpio
 import iot_control.backends.mqtthass
 from iot_control.iotfactory import IoTFactory
 
@@ -34,16 +35,25 @@ class Dachgarten:
             backend_cfg = self.conf["backends"][backend]
             self.backends.append(IoTFactory.create_backend(
                 backend, config=backend_cfg))
+        sys.stdout.flush()
         # second: register devices with backend
         for device in self.conf["devices"]:
             device_cfg = self.conf["devices"][device]
-            real_device = IoTFactory.create_device(
-                device, config=device_cfg)
+            print(device_cfg)
+            try:
+                real_device = IoTFactory.create_device(
+                    device, config=device_cfg)
+            except:
+                e = sys.exc_info()[0]
+                print("Error: {}".format(e))
+            print(real_device)
             self.devices.append(real_device)
             for backend in self.backends:
                 backend.register_device(real_device)
+        sys.stdout.flush()
         for backend in self.backends:
             backend.announce()
+        sys.stdout.flush()
 
     def set_intervall(self, new_intervall: int):
         self.update_intervall = new_intervall

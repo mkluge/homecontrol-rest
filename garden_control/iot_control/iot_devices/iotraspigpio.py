@@ -46,7 +46,7 @@ class IoTraspigpio(IoTDeviceBase):
     def sensor_list(self) -> list:
         return self.names.keys()
 
-    def set_state(self, messages: Dict) -> None:
+    def set_state(self, messages: Dict) -> bool:
         for msg in messages:
             if msg in self.names:
                 pin = self.names[msg]
@@ -55,6 +55,7 @@ class IoTraspigpio(IoTDeviceBase):
                     GPIO.output(pin, GPIO.HIGH)
                 else:
                     GPIO.output(pin, GPIO.LOW)
+        return True
 
     def shutdown(self, _) -> None:
         """ nothing to do """
