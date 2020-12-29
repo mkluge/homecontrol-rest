@@ -22,18 +22,19 @@ class IoTbme280(IoTDeviceBase):
         self.conf = setupdata
         self.port = setupdata["port"]
         self.address = setupdata["i2c_address"]
-        self.bus = smbus2.SMBus(self.port)
-        self.calibration_params = bme280.load_calibration_params(
-            self.bus, self.address)
 
     def read_data(self) -> Dict:
         """ read data """
-        data = bme280.sample(self.bus, self.address, self.calibration_params)
+        bus = smbus2.SMBus(self.port)
+        calibration_params = bme280.load_calibration_params(
+            bus, self.address)
+        data = bme280.sample(bus, self.address, calibration_params)
         val = {
-            "temperature": data.temperature,
-            "humidity": data.humidity,
-            "pressure": data.pressure
+            "temperature": "{:.1f}".format(data.temperature),
+            "humidity": "{:.1f}".format(data.humidity),
+            "pressure": "{:.1f}".format(data.pressure)
         }
+        bus.close()
         return val
 
     def sensor_list(self) -> list:

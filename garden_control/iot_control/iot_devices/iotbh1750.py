@@ -22,20 +22,21 @@ class IoTbh1750(IoTDeviceBase):
         self.conf = setupdata
         self.port = setupdata["port"]
         self.address = setupdata["i2c_address"]
-        self.bus = smbus.SMBus(self.port)
 
     def read_data(self) -> Dict:
         """ read data """
+        bus = smbus.SMBus(self.port)
         # Start measurement at 1lx resolution. Time typically 120ms
         # Device is automatically set to Power Down after measurement.
         ONE_TIME_HIGH_RES_MODE_1 = 0x20
         # Read data from I2C interface
-        data = self.bus.read_i2c_block_data(
+        data = bus.read_i2c_block_data(
             self.address, ONE_TIME_HIGH_RES_MODE_1)
         result = (data[1] + (256 * data[0])) / 1.2
         val = {
             "illuminance": "{:.1f}".format(result),
         }
+        bus.close()
         return val
 
     def sensor_list(self) -> list:
