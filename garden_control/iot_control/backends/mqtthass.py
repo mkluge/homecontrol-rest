@@ -1,9 +1,5 @@
 #!/usr/bin/python3
 
-# install packages:
-# sudo apt install python3-influxdb python3-yaml
-# pip3 install paho-mqtt
-
 import json
 from typing import Dict, List
 from iot_control.iotbackendbase import IoTBackendBase
@@ -38,7 +34,6 @@ class BackendMqttHass(IoTBackendBase):
 #                username=config['user'], password=config['password'])
 
     def register_device(self, device: IoTDeviceBase) -> None:
-        print(device)
         self.devices.append(device)
 
     def shutdown(self):
