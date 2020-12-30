@@ -7,18 +7,19 @@ backends:
     port: 1883
     user: ''
     password: ''
-    # "homeassistant" is the standard value for HAss
+    # "homeassistant" is the standard value
     hass_discovery_prefix: "homeassistant"
     online_payload: "online"
     offline_payload: "offline"
     payload_off: "off"
     payload_on: "on"
-#  influx:
-#    server: ''
-#    port: 8086
-#    user: ''
-#    pass: ''
-#    database: ''
+  influx:
+    server: '192.168.178.104'
+    port: 8086
+    user: 'mkluge'
+    password: '12gamma3'
+    database: 'apl19f'
+# configure devices
 devices:
   raspi-gpio:
     payload_off: "off"
@@ -27,15 +28,23 @@ devices:
       relais-pumpe:
         name: Relais Wasserpumpe Dachgarten
         unique_id: "wasser_relais_dachgarten"
-        # mapping from name to PIN (GPIO number, not board number)
+        # PIN as GPIO number, not board number
         pin: 17
   ads1115:
     sensors:
       feuchte:
+        # an mqtt device class (required, if mqtt is used)
         device_class: "voltage"
+        # (required)
         name: "Feuchtesensor Dachgarten"
+        # the ID of the device. This is only to allow for separate topics for
+        # each device and is not used for the entity_id. The ID of the device
+        #  must only consist of characters from the character class [a-zA-Z0-9_-]
+        #  (alphanumerics, underscore and hyphen). (required)
         unique_id: "feuchte_dachgarten"
+        # (required)
         unit_of_measurement: "V"
+        # (required)
         expire_after: 370
   bh1750:
     port: 1
@@ -55,7 +64,6 @@ devices:
         # one of the supported MQTT components
         device_class: "humidity"
         name: "Luftfeuchte Dachgarten"
-        # the ID of the device. This is only to allow for separate topics for each device and is not used for the entity_id. The ID of the device must only consist of characters from the character class [a-zA-Z0-9_-] (alphanumerics, underscore and hyphen).
         unique_id: "luftfeuchte_dachgarten"
         unit_of_measurement: "%"
         expire_after: 370

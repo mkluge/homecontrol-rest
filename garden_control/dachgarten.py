@@ -13,6 +13,7 @@ from iot_control.iot_devices import iotads1115
 from iot_control.iot_devices import iotbh1750
 from iot_control.iot_devices import iotraspigpio
 import iot_control.backends.mqtthass
+import iot_control.backends.influx
 from iot_control.iotfactory import IoTFactory
 
 
@@ -33,8 +34,12 @@ class Dachgarten:
         # first: build backends
         for backend in self.conf["backends"]:
             backend_cfg = self.conf["backends"][backend]
-            self.backends.append(IoTFactory.create_backend(
-                backend, config=backend_cfg))
+            try:
+                self.backends.append(IoTFactory.create_backend(
+                    backend, config=backend_cfg))
+            except:
+                e = sys.exc_info()[0]
+                print("error creating backend: {}".format(e))
         sys.stdout.flush()
         # second: register devices with backend
         for device in self.conf["devices"]:
@@ -43,13 +48,13 @@ class Dachgarten:
             try:
                 real_device = IoTFactory.create_device(
                     device, config=device_cfg)
+                print(real_device)
+                self.devices.append(real_device)
+                for backend in self.backends:
+                    backend.register_device(real_device)
             except:
                 e = sys.exc_info()[0]
-                print("Error: {}".format(e))
-            print(real_device)
-            self.devices.append(real_device)
-            for backend in self.backends:
-                backend.register_device(real_device)
+                print("error creating device: {}".format(e))
         sys.stdout.flush()
         for backend in self.backends:
             backend.announce()
