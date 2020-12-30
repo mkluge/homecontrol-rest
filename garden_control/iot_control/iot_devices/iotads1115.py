@@ -7,7 +7,7 @@
 from typing import Dict
 from iot_control.iotdevicebase import IoTDeviceBase
 from iot_control.iotfactory import IoTFactory
-from iot_control.iot_devices.ADS1x15 import ADS1115
+from iot_control.iot_devices.external.ADS1x15 import ADS1115
 
 
 @IoTFactory.register_device("ads1115")
