@@ -1,8 +1,8 @@
 import os
 import time
 import subprocess
-import lirc
 import json
+import lirc
 import denonavr
 from mqttw import MqttWrapper
 
@@ -34,11 +34,8 @@ while True:
             print("SAT: " + str(sat_on))
             # wenn Sat nicht anwar, wurde es gerade angeschaltet
             if not sat_on:
-                # d.h. Beamer an
-                for l in range(1, 5):
-                    os.system(
-                        "irsend --device=/var/run/lirc/lircd-tx SEND_ONCE EPSON-TW6000 KEY_POWERUP")
-                    time.sleep(0.05)
+                # Beamer an
+                client.publish(config["MQTT_BEAMER_TOPIC"], "on")
                 # und Denon an, wenn nicht schon an
                 denon.update()
                 denon.power_on()
@@ -46,18 +43,12 @@ while True:
                 denon.input_func = "AUXB"
                 time.sleep(3)
                 denon.set_volume(-40)
-                # noch Bescheid geben, dass der Beamer jetzt an ist
-                client.publish(config["MQTT_BEAMER_TOPIC"], "on")
             else:
+                # Denon Lautstärke runter und aus
                 denon.set_volume(-60)
-                # war an, alles ausschalten
-                for l in range(1, 5):
-                    os.system(
-                        "irsend --device=/var/run/lirc/lircd-tx SEND_ONCE EPSON-TW6000 KEY_SUSPEND")
-                    time.sleep(0.05)
                 denon.update()
                 denon.input_func = "Spotify"
                 denon.power_off()
-                # noch Bescheid geben, dass der Beamer jetzt aus ist
+                # Beamer aus
                 client.publish(config["MQTT_BEAMER_TOPIC"], "off")
         time.sleep(0.05)

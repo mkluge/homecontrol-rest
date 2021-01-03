@@ -3,7 +3,7 @@
   roles:
     - root_key
     - check_mk_client
-    - dachgarten
+#    - dachgarten
   vars:
     script_dir: /home/pi/rest_software
     script_owner: pi

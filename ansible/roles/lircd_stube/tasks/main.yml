@@ -31,6 +31,13 @@
     owner: "{{ script_owner }}"
     group: "{{ script_group }}"
     mode: 0644
+- name: copy beamer command wrapper
+  copy:
+    src: beamer_command.sh
+    dest: "{{ script_dir }}/"
+    owner: "{{ script_owner }}"
+    group: "{{ script_group }}"
+    mode: 0755
 - name: copy python module mqttw
   copy:
     src: mqttw.py
@@ -44,16 +51,6 @@
     dest: "{{ script_dir }}/"
     owner: "{{ script_owner }}"
     group: "{{ script_group }}"
-    mode: 0644
-- name: install beamer mqtt systemd unit file
-  vars:
-    script: "{{ script_dir }}/mediactrl.py"
-    description: Beamer MQTT Service
-  template:
-    src: python_service.j2
-    dest: "{{ systemd_dir }}/mediactrl.service"
-    owner: "{{ systemd_owner }}"
-    group: "{{ systemd_group }}"
     mode: 0644
 - name: start mediactrl service
   systemd: 
