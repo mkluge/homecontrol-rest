@@ -1,0 +1,32 @@
+---
+- name: clone iot_control project
+  git:
+    dest: "{{ iot_control }}"
+    repo: https://github.com/mkluge/iot_control.git
+- name: install python modules
+  pip:
+    requirements: "{{ iot_control }}/requirements.txt"
+    executable: pip3
+- name: copy host specific config file
+  copy:
+    src: "{{ inventory_hostname }}/setup.yaml"
+    dest: "{{ iot_control }}/"
+    owner: "{{ script_owner }}"
+    group: "{{ script_group }}"
+    mode: 0644
+- name: install iot_control systemd unit file
+  vars:
+    script_dir: "{{ iot_control }}" 
+    script: "{{ iot_control }}/rooftop.py"
+    description: IoT control service
+  template:
+    src: python_service.j2
+    dest: "{{ systemd_dir }}/iotcontrol.service"
+    owner: "{{ systemd_owner }}"
+    group: "{{ systemd_group }}"
+    mode: 0644
+- name: start iot_control service
+  systemd: 
+    state: restarted
+    name: iotcontrol
+    daemon_reload: yes

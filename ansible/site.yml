@@ -6,6 +6,7 @@
 #    - dachgarten
   vars:
     script_dir: /home/pi/rest_software
+    iot_control: /home/pi/iot_control
     script_owner: pi
     script_group: pi
     systemd_owner: root
@@ -14,10 +15,12 @@
 - hosts: stube
   roles:
     - root_key
+    - iot_control
     - check_mk_client
     - beamer
     - lircd_stube
   vars:
+    iot_control: /home/pi/iot_control
     script_dir: /home/pi/rest_software
     script_owner: pi
     script_group: pi
