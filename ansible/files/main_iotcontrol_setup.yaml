@@ -1,0 +1,55 @@
+# name for the sensors in the tree
+name: 'garden'
+# configure backends
+backends:
+  mqtt_hass:
+    server: '192.168.178.104'
+    port: 1883
+    user: ''
+    password: ''
+    # 'homeassistant' is the standard value
+    hass_discovery_prefix: 'homeassistant'
+    online_payload: 'online'
+    offline_payload: 'offline'
+    payload_off: 'off'
+    payload_on: 'on'
+  influx:
+    server: '192.168.178.104'
+    port: 8086
+    user: 'mkluge'
+    password: '12gamma3'
+    database: 'apl19f'
+# configure devices
+devices:
+  command_switch:
+    payload_off: 'off'
+    payload_on: 'on'
+    names:
+      beamer:
+        name: 'Beamer'
+        unique_id: 'beamer_living_room'
+        on_command: '/home/pi/rest_software/beamer_command.sh KEY_POWERUP'
+        off_command: '/home/pi/rest_software/beamer_command.sh KEY_SUSPEND'
+  bme280:
+    port: 1
+    i2c_address: 0x76
+    sensors:
+      humidity:
+        # one of the supported MQTT components
+        device_class: "humidity"
+        name: "Luftfeuchte Stube "
+        unique_id: "humidity_stube"
+        unit_of_measurement: "%"
+        expire_after: 370
+      temperature:
+        device_class: "temperature"
+        name: "Temperatur Stube"
+        unique_id: "temperature_stube"
+        unit_of_measurement: "°C"
+        expire_after: 370
+      pressure:
+        device_class: "pressure"
+        name: "Luftdruck Stube"
+        unique_id: "pressure_stube"
+        unit_of_measurement: "hPa"
+        expire_after: 370
