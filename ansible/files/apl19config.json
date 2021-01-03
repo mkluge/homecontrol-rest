@@ -1,6 +1,6 @@
 {
     "IP_MQTT": "192.168.178.104",
-    "MQTT_BEAMER_TOPIC": "beamer/power",
+    "MQTT_BEAMER_TOPIC": "homeassistant/switch/beamer_living_room/command",
     "IP_AUDIO": "192.168.178.35",
     "IP_SAT": "192.168.178.41"
 }
