@@ -21,9 +21,9 @@ class MqttWrapper:
             self.connected_flag = False
         print("Connected with result code " + str(rc))
 
-    def on_disconnect(_mqtt_client, _userdata, rc):
+    def on_disconnect(self, _mqtt_client, _userdata, rc):
         print("disconnecting reason  " + str(rc))
-        client.connected_flag = False
+        self.connected_flag = False
 
     def publish(self, topic, value):
         if self.connected_flag:
