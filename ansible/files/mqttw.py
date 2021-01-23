@@ -26,5 +26,6 @@ class MqttWrapper:
         self.connected_flag = False
 
     def publish(self, topic, value):
-        if self.connected_flag:
-            self.client.publish(topic, value)
+        if not self.connected_flag:
+            self.client.reconnect()
+        self.client.publish(topic, value)
